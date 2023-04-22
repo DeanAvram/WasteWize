@@ -16,7 +16,7 @@ import torchvision.models as models
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 
-from flask import Flask
+from PIL import Image
 
 
 classes = ['metal', 'glass', 'paper', 'trash', 'cardboard', 'plastic']
@@ -125,19 +125,14 @@ def predict_image(img, model):
     return classes[preds[0].item()]
 
 
-from PIL import Image
-
-
-# from pathlib import Path
-
 def predict_external_image(model, image_name):
     # image = Image.open(Path('./' + image_name))
     image = Image.open(image_name)
-
     example_image = transformations(image)
-    plt.imshow(example_image.permute(1, 2, 0))
-    print("The image resembles", predict_image(example_image, model) + ".")
+    # plt.imshow(example_image.permute(1, 2, 0))
+    # print("The image resembles", predict_image(example_image, model) + ".")
+    return predict_image(example_image, model)
 
 
 # Need to upload the folder to the project first
-predict_external_image(model, "Garbage Photos/glass_test/1.jpg")
+# predict_external_image(model, "Garbage Photos/glass_test/1.jpg")
