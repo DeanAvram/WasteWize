@@ -11,4 +11,4 @@ The user will scan a waste with his camera. With the image classification algori
 The app is connecting to many APIs and maps to find the closest relevant recycling facility to the user.
 
 ## Created By
-- Dean Avram
+- Dean Av
