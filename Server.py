@@ -6,6 +6,8 @@ from socket import *
 import numpy as np
 import Network
 import torch
+from PIL import Image
+import io
 # from flask_httpauth import HTTPBasicAuth
 
 sock = socket(AF_INET, SOCK_STREAM)
@@ -16,8 +18,8 @@ app = Flask(__name__)
 # auth = HTTPBasicAuth()
 
 
-invalid_Task_JSON_404 = {'error': 'Invalid Task Id'}
-invalid_Task_JSON_400 = {'error': 'Bad Request'}
+# invalid_Task_JSON_404 = {'error': 'Not found'}
+# invalid_Task_JSON_400 = {'error': 'Bad Request'}
 
 '''
 @auth.get_password
@@ -39,7 +41,7 @@ Network.to_device(model, device)
 model.load_state_dict(torch.load("model_file.pt", map_location=torch.device('cpu')))
 model.eval()
 
-
+'''
 @app.route('/predict', methods=['POST'])
 def get_prediction_post_request():
     # Works only for a single sample
@@ -63,8 +65,29 @@ def get_prediction_get_request(image_name):
         # prediction = model.predict(data)  # runs globally loaded model on the data
         prediction = Network.predict_external_image(model, image_name)
     return prediction
+    
+    '''
 
 
+@app.route('/predict', methods=['POST'])
+def get_prediction_request():
+    if request.method == 'POST':
+        data = request.get_data() # Get data posted
+        stream = io.BytesIO(data)
+        image = Image.open(stream)
+        return Network.predict_external_image(model, image)
+        # image_name = request.view_args['image_name']
+        # image_name = image_name.replace('.', '/') + '.jpg'
+        # data = np.array(data)[np.newaxis, :]  # converts shape from (4,) to (1, 4)
+        # prediction = model.predict(data)  # runs globally loaded model on the data
+        # prediction = Network.predict_external_image(model, image_name)
+
+
+
+
+
+
+'''
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify(invalid_Task_JSON_404), 404)
@@ -73,6 +96,6 @@ def not_found(error):
 @app.errorhandler(400)
 def not_found(error):
     return make_response(jsonify(invalid_Task_JSON_400), 400)
-
+'''
 
 app.run('127.0.0.1', 5000)
